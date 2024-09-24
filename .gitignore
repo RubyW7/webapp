@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+npm-debug.log
+.DS_Store
+
+# Environment variables file
+.env
+
+# Log files
+logs/
+*.log
+
+# Build output
+dist/
+build/
