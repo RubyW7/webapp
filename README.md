@@ -35,7 +35,7 @@ To install the necessary dependencies, follow these steps:
 
 2. Install the dependencies:
     ```bash
-    npm init
+    npm install
     npm install express
     npm install sequelize sqlite3
     npm install --save pg pg-hstore
