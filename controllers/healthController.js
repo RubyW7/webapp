@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const sequelize = require('../config/db');
 
 const healthCheck = async (req, res) => {
     if (req.body && Object.keys(req.body).length > 0) {
@@ -6,7 +6,8 @@ const healthCheck = async (req, res) => {
     }
 
     try {
-        await pool.query('SELECT NOW()');
+        // use sequelize to verify database connection
+        await sequelize.authenticate(); 
         res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
         return res.status(200).send();
     } catch (error) {
