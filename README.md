@@ -27,9 +27,11 @@ Before you begin, ensure you have met the following requirements:
 
 To install the necessary dependencies, follow these steps:
 
+1. Fork the repository:
+
 1. Clone the repository:
     ```bash
-    git clone https://github.com/YidanWWW/webapp.git
+    git clone https://github.com/your-user-name/webapp.git
     cd webapp
     ```
 
