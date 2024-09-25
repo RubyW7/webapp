@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', healthCheck);
 
 router.all('/', (req, res) => {
-    return res.status(405).send(); // return 405 
+    return res.status(405).send(); 
 });
 
 module.exports = router;
