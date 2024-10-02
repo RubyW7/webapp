@@ -13,3 +13,7 @@ logs/
 # Build output
 dist/
 build/
+
+*.db
+*.sqlite
+
