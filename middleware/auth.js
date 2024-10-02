@@ -1,27 +1,36 @@
-// middleware/auth.js
-const basicAuth = require('basic-auth');
-const bcrypt = require('bcryptjs');
-const { User } = require('../models'); 
+// authMiddleware.js
+const User = require('../models/user'); 
+const bcrypt = require('bcrypt');
 
-const authenticateUser = async (req, res, next) => {
-    const credentials = basicAuth(req);
+const authenticate = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
 
-    if (!credentials || !credentials.name || !credentials.pass) {
-        return res.status(401).send({ error: '未经授权' });
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+        return res.status(401).json({ message: 'Authorization header missing or invalid' });
     }
 
-    try {
-        const user = await User.findOne({ where: { email: credentials.name } });
+    const token = authHeader.split(' ')[1];
+    const credentials = Buffer.from(token, 'base64').toString('utf8');
+    const [email, password] = credentials.split(':');
 
-        if (!user || !(await bcrypt.compare(credentials.pass, user.password))) {
-            return res.status(401).send({ error: '未经授权' });
+    try {
+        const user = await User.findOne({ where: { email } });
+
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        if (user && await bcrypt.compare(password, user.password)) {
+            req.user = user; 
+            return next();
         }
 
-        req.user = user;
-        next();
+        return res.status(401).json({ message: 'Invalid credentials' });
     } catch (error) {
-        return res.status(500).send({ error: '服务器内部错误' });
+        console.error('Authentication error:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 
-module.exports = authenticateUser;
+module.exports = authenticate;

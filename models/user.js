@@ -36,7 +36,7 @@ const User = sequelize.define('User', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'Users',  // 明确指定使用的表名为 'Users'
+    tableName: 'Users',  
     hooks: {
         beforeCreate: async (user) => {
             const bcrypt = require('bcryptjs');
