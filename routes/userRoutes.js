@@ -10,6 +10,8 @@ router.get('/v1/user/self', authenticate, async (req, res) => {
     try {
         const user = req.user;
 
+        res.header('Accept', 'application/json'); 
+
         return res.status(200).json({
             id: user.id,
             first_name: user.first_name,
@@ -49,7 +51,8 @@ router.post('/v1/user',
                 password
             });
 
-            // 返回新创建用户的信息
+            res.header('Accept', 'application/json');
+
             return res.status(201).json({
                 id: newUser.id,
                 first_name: newUser.first_name,
