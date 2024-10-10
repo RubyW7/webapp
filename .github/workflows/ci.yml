@@ -4,28 +4,21 @@
 name: Node.js CI
 
 on:
-  pull_request:
-    types: [ opened, reopened ]
+  pull_request_target:
+    branches:
+      - main
+    types: [opened, reopened]
 
 jobs:
-  build:
-    name: super-test-cases
+  prettier:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
-
-
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm i
-    - run: |
-          zip -r webApp.zip ./
-          pwd ./webApp
-          packer init .
-          packer fmt .
-          packer validate  -var-file="vars.json" ami.json.pkr.hcl
+        node-version: '16.x'
+    - name: Install Prettier
+      run: npm install --save-dev prettier
+    - name: Check format
+      run: npx prettier --check .
