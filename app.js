@@ -21,3 +21,4 @@ sequelize
   .catch((err) => {
     console.error("Error synchronizing the database:", err);
   });
+;;)))
