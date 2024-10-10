@@ -20,4 +20,3 @@ sequelize.sync({ alter: true })
   .catch(err => {
     console.error('Error synchronizing the database:', err);
   });
-;;
