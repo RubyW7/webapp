@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/healthz", healthRoutes);
-app.use(userRoutes);
+      app.use(userRoutes);
 
 sequelize
   .sync({ alter: true })
