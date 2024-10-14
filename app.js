@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/healthz", healthRoutes);
+        app.use("/healthz", healthRoutes);
 app.use(userRoutes);
 
 sequelize
