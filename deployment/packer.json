@@ -1,0 +1,39 @@
+{
+    "variables": {
+      "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+      "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+      "region": "us-east-1"
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `region`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd/ubuntu-jammy-24.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["099720109477"],
+        "most_recent": true
+      },
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "packer-{{timestamp}}"
+    }],
+    "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sudo apt-get update",
+        "sudo apt-get install -y postgresql postgresql-contrib",
+        "sudo systemctl start postgresql",
+        "sudo systemctl enable postgresql",
+        "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -",
+        "sudo apt-get install -y nodejs",
+        "sudo npm install -g pm2",
+        "pm2 startup systemd"
+      ]
+    }]
+  }
+  
