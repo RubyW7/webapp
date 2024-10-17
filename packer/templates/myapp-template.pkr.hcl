@@ -66,7 +66,6 @@ build {
 
     inline = [
       "sudo apt-get update",
-      "sudo apt-get remove git-y",
       "sudo ufw deny 3306",
       "sudo ufw deny 5432",
       "sudo apt-get upgrade -y",
