@@ -3,7 +3,7 @@ variable  "aws_region" {
   default = "us-east-1"
 }
 
-variable "source_ami" 
+variable "source_ami" {
   type = string
   default = "ami-013b3de8a8fa9b39f"
 }
