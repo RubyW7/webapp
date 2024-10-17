@@ -20,10 +20,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build AMI
+      - name: Initialize Packer
         run: |
           cd packer/templates
-          packer build myapp-template.pkr.hcl
+          packer init .
+
+      - name: Build AMI
+        run: packer build myapp-template.pkr.hcl
 
       - name: Retrieve latest AMI ID
         run: |
