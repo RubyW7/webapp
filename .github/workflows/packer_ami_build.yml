@@ -1,0 +1,35 @@
+name: Build and Share AMI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_share_ami:
+    name: Build and Share AMI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build AMI
+        run: |
+          cd packer/templates
+          packer build template.json
+
+      - name: Retrieve latest AMI ID
+        run: |
+          AMI_ID=$(aws ec2 describe-images --region us-east-1 --owners self --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text)
+          echo "Latest AMI ID: $AMI_ID"
+
+      - name: Share AMI
+        run: |
+          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add=[{UserId='703671935232'}]"
