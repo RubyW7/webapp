@@ -31,10 +31,17 @@ jobs:
           packer build myapp-template.pkr.hcl
 
       - name: Retrieve latest AMI ID
+        id: get_ami
         run: |
-          AMI_ID=$(aws ec2 describe-images --region us-east-1 --owners self --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' --output text)
-          echo "Latest AMI ID: $AMI_ID"
+          echo "Retrieving AMI ID..."
+          AMI_ID=$(aws ec2 describe-images --filters "Name=name,Values=your-ami-name" --query "Images[0].ImageId" --output text)
+          echo "::set-output name=AMI_ID::$AMI_ID"  # Sets the output variable for use in subsequent steps
 
       - name: Share AMI
         run: |
           aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add=[{UserId='703671935232'}]"
+
+      - name: Modify AMI Launch Permissions
+        run: |
+          echo "Modifying AMI launch permissions for AMI ID ${{ steps.get_ami.outputs.AMI_ID }}"
+          aws ec2 modify-image-attribute --image-id ${{ steps.get_ami.outputs.AMI_ID }} --launch-permission "Add=[{UserId='703671935232'}]"
