@@ -22,3 +22,8 @@ jobs:
         run: npm install --save-dev prettier
       - name: Check format
         run: npx prettier --check .
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
