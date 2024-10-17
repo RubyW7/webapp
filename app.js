@@ -11,4 +11,3 @@ app.use("/healthz", healthRoutes);
 app.use(userRoutes);
 
 module.exports = app;
-
