@@ -16,7 +16,7 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v2
         with:
-          packer-version: '1.7.8'
+          packer-version: "1.7.8"
 
       - name: Validate Packer template format
         run: packer fmt -check .
@@ -31,7 +31,7 @@ jobs:
       - name: Set up Packer
         uses: hashicorp/setup-packer@v1
         with:
-          packer-version: '1.7.8'
+          packer-version: "1.7.8"
 
       - name: Validate Packer template
         run: |
