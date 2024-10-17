@@ -26,7 +26,9 @@ jobs:
           packer init .
 
       - name: Build AMI
-        run: packer build myapp-template.pkr.hcl
+        run: |
+          cd packer/templates
+          packer build myapp-template.pkr.hcl
 
       - name: Retrieve latest AMI ID
         run: |

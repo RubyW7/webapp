@@ -13,7 +13,7 @@ variable "ssh_username" {
   default = "ubuntu"
 }
 
-variable "vpc_id" 
+variable "vpc_id" {
   type = string
   default = "vpc-0acefcad24c0b914b"
 }
