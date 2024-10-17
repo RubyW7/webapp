@@ -23,7 +23,7 @@ jobs:
       - name: Build AMI
         run: |
           cd packer/templates
-          packer build template.json
+          packer build myapp-template.pkr.hcl
 
       - name: Retrieve latest AMI ID
         run: |
