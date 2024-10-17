@@ -8,7 +8,7 @@ variable "source_ami" {
   default = "ami-013b3de8a8fa9b39f"
 }
 
-variable "ssh_username" 
+variable "ssh_username" ;;;;
   type = string
   default = "ubuntu"
 }
