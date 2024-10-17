@@ -1,0 +1,39 @@
+name: Packer Template Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  format:
+    name: Check Packer Template Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v2
+        with:
+          packer-version: "1.7.8"
+
+      - name: Validate Packer template format
+        run: packer fmt -check .
+
+  validate:
+    name: Validate Packer Template
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@v1
+        with:
+          packer-version: "1.7.8"
+
+      - name: Validate Packer template
+        run: |
+          cd packer/templates
+          packer validate myapp-template.pkr.hcl
