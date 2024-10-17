@@ -19,7 +19,9 @@ jobs:
           packer-version: "1.7.8"
 
       - name: Validate Packer template format
-        run: packer fmt -check .
+        run: |
+          cd packer/templates
+          packer fmt -check .
 
   validate:
     name: Validate Packer Template
