@@ -1,7 +1,7 @@
 name: Build and Share AMI
 
 on:
-  pull_request_target:
+  push:
     branches:
       - main
 
@@ -19,6 +19,28 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup environment variables
+        run: |
+          touch .env
+          echo DB_USER=${{ secrets.DB_USER }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+
+      - name: Create Application Artifact
+        run: |
+         mkdir artifacts
+         zip -r artifacts/webapp.zip . -x "*.git*"
+
+      - name: Install Packer
+        run: |
+          PACKER_VERSION="1.9.4" 
+          wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
+          unzip packer_${PACKER_VERSION}_linux_amd64.zip
+          sudo mv packer /usr/local/bin/
+          packer --version
 
       - name: Initialize Packer
         run: |

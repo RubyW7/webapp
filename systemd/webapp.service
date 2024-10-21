@@ -1,0 +1,16 @@
+[Unit]
+Description=Web-App
+After=network.target cloud-init.service
+Wants=cloud-init.service
+
+[Service]
+EnvironmentFile=/opt/csye6225/web-app/.env
+Type=simple
+User=csye6225
+ExecStart=/usr/bin/node /opt/csye6225/web-app/app.js
+Restart=always
+RestartSec=10
+WorkingDirectory=/opt/csye6225/web-app
+
+[Install]
+WantedBy=cloud-init.target
