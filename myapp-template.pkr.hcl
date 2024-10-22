@@ -87,7 +87,7 @@ build {
     inline = [
       "sudo apt update",
       "sudo apt upgrade -y",
-      "sudo apt install -y node.js",
+      "sudo apt install -y nodejs",
       "sudo apt install -y npm",
       "sudo apt-get update",
       "sudo apt-get install unzip",
