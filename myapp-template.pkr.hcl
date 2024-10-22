@@ -101,7 +101,9 @@ build {
       "sudo cp /opt/csye6225/web-app/systemd/webapp.service /etc/systemd/system/",
 
       # Install dependencies and set up the application
-      "sudo cd /opt/csye6225/web-app",
+      "sudo chmod -R 755 /opt/csye6225/web-app",
+      "ls -ld /opt/csye6225/web-app"
+      "cd /opt/csye6225/web-app",
       "sudo npm install",
       "sudo apt-get remove --purge -y git",
       "sudo chown -R csye6225:csye6225 /opt/csye6225",
