@@ -36,9 +36,9 @@ jobs:
 
       - name: Install Packer
         run: |
-          PACKER_VERSION="1.9.4" 
+          PACKER_VERSION="1.11.2" 
           wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
-          unzip packer_${PACKER_VERSION}_linux_amd64.zip
+          unzip -o packer_${PACKER_VERSION}_linux_amd64.zip
           sudo mv packer /usr/local/bin/
           packer --version
 
