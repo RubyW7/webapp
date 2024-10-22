@@ -105,7 +105,7 @@ build {
       "ls -ld /opt/csye6225/web-app",
       "cd /opt/csye6225/web-app",
       "sudo npm install",
-      "sudo apt-get remove --purge -y git",
+      "sudo apt-get remove --purge -y git"
       "sudo chown -R csye6225:csye6225 /opt/csye6225",
       "sudo chmod -R 700 /opt/csye6225",
 
