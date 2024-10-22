@@ -102,7 +102,7 @@ build {
 
       # Install dependencies and set up the application
       "sudo chmod -R 755 /opt/csye6225/web-app",
-      "ls -ld /opt/csye6225/web-app"
+      "ls -ld /opt/csye6225/web-app",
       "cd /opt/csye6225/web-app",
       "sudo npm install",
       "sudo apt-get remove --purge -y git",
