@@ -104,10 +104,9 @@ build {
       "sudo cd /opt/csye6225/web-app",
       "sudo npm install",
       "sudo apt-get remove --purge -y git",
-      "sudo rm -rf /home/admin/webapp.zip",
       "sudo chown -R csye6225:csye6225 /opt/csye6225",
       "sudo chmod -R 700 /opt/csye6225",
-      
+
       # Download and install the CloudWatch Agent
       "echo 'Downloading the CloudWatch Agent package...'",
       "sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb",
