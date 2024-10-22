@@ -73,7 +73,7 @@ build {
     destination = "/tmp/webapp.zip"
   }
 
-    provisioner "file" {
+  provisioner "file" {
     source      = "././systemd/webapp.service"
     destination = "/tmp/webapp.service"
   }
