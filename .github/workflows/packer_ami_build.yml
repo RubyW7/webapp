@@ -36,33 +36,16 @@ jobs:
 
       - name: Install Packer
         run: |
-          PACKER_VERSION="1.11.2" 
-          PACKER_ZIP_FILE="packer_${PACKER_VERSION}_linux_amd64.zip"
-          PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP_FILE}"
-          echo "Downloading Packer from ${PACKER_URL}..."
-          wget $PACKER_URL
-          if [ $? -ne 0 ]; then
-            echo "Failed to download Packer"
-            exit 1
-          fi
-          echo "Unzipping Packer..."
-          unzip -o $PACKER_ZIP_FILE
-          sudo mv packer /usr/local/bin/
-          if [ $? -ne 0 ]; then
-            echo "Failed to move Packer to /usr/local/bin"
-            exit 1
-          fi
-          echo "Packer installation- successful"
-          packer --version
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install packer
 
       - name: Initialize Packer
         run: |
-          cd packer/templates
-          packer init .
+          packer init myapp-template.pkr.hcl
 
       - name: Build AMI
         run: |
-          cd packer/templates
           packer build myapp-template.pkr.hcl
 
       - name: Retrieve and Share AMI
