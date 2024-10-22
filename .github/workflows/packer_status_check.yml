@@ -20,7 +20,6 @@ jobs:
 
       - name: Validate Packer template format
         run: |
-          cd packer/templates
           packer fmt -check .
 
   validate:
@@ -41,10 +40,8 @@ jobs:
 
       - name: Initialize Packer
         run: |
-          cd packer/templates
-          packer init .
+          packer init myapp-template.pkr.hcl
 
       - name: Validate Packer template
         run: |
-          cd packer/templates
           packer validate myapp-template.pkr.hcl
