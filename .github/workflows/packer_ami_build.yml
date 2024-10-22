@@ -31,15 +31,28 @@ jobs:
 
       - name: Create Application Artifact
         run: |
-         mkdir artifacts
-         zip -r artifacts/webapp.zip . -x "*.git*"
+          mkdir artifacts
+          zip -r artifacts/webapp.zip . -x "*.git*"
 
       - name: Install Packer
         run: |
           PACKER_VERSION="1.11.2" 
-          wget https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
-          unzip -o packer_${PACKER_VERSION}_linux_amd64.zip
+          PACKER_ZIP_FILE="packer_${PACKER_VERSION}_linux_amd64.zip"
+          PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP_FILE}"
+          echo "Downloading Packer from ${PACKER_URL}..."
+          wget $PACKER_URL
+          if [ $? -ne 0 ]; then
+            echo "Failed to download Packer"
+            exit 1
+          fi
+          echo "Unzipping Packer..."
+          unzip -o $PACKER_ZIP_FILE
           sudo mv packer /usr/local/bin/
+          if [ $? -ne 0 ]; then
+            echo "Failed to move Packer to /usr/local/bin"
+            exit 1
+          fi
+          echo "Packer installation- successful"
           packer --version
 
       - name: Initialize Packer
