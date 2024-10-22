@@ -48,11 +48,11 @@ jobs:
         run: |
           packer build myapp-template.pkr.hcl
 
-      - name: Retrieve and Share AMI
+      - name: Share AMI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1' 
         run: |
-          echo "Retrieving AMI ID..."
-          AMI_ID=$(aws ec2 describe-images --filters "Name=name,Values=your-ami-name" --query "Images[0].ImageId" --output text)
-          echo "AMI ID: $AMI_ID"
-          echo "Modifying AMI launch permissions..."
-          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add=[{UserId='703671935232'}]"
-          echo "Permissions modified for AMI ID $AMI_ID"
+          AMI_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d':' -f2)
+          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add={UserId=[703671935232]}" 
