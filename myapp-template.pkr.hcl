@@ -85,40 +85,42 @@ build {
     ]
 
     inline = [
-      "sudo apt update",
-      "sudo apt upgrade -y",
-      "sudo apt install -y nodejs",
-      "sudo apt install -y npm",
+      # Update package list and upgrade the system
       "sudo apt-get update",
-      "sudo apt-get install unzip",
-      "sudo mkdir /opt/csye6225/web-app",
+      "sudo apt-get upgrade -y",
+
+      # Install Node.js and npm
+      "sudo apt-get install -y nodejs npm",
+
+      # Install unzip utility
+      "sudo apt-get install -y unzip",
+
+      # Prepare the application directory
+      "sudo mkdir -p /opt/csye6225/web-app",
       "sudo unzip /tmp/webapp.zip -d /opt/csye6225/web-app",
-      "sudo cp /opt/csye6225/web-app/systemd/webapp.service /etc/systemd/system/webapp.service",
-      "cd /opt/csye6225/web-app",
-      "sudo npm i",
+      "sudo cp /opt/csye6225/web-app/systemd/webapp.service /etc/systemd/system/",
+
+      # Install dependencies and set up the application
+      "sudo cd /opt/csye6225/web-app",
+      "sudo npm install",
       "sudo apt-get remove --purge -y git",
-      "sudo rm -rf /home/admin/webapp.zip",
       "sudo chown -R csye6225:csye6225 /opt/csye6225",
       "sudo chmod -R 700 /opt/csye6225",
-      #Installing CloudWatch Agent
+
+      # Download and install the CloudWatch Agent
       "echo 'Downloading the CloudWatch Agent package...'",
       "sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb",
-
       "echo 'Installing the CloudWatch Agent package...'",
-      "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
+      "sudo dpkg -i ./amazon-cloudwatch-agent.deb",
 
-      "echo 'Enabling the CloudWatch Agent service...'",
-      "sudo systemctl enable amazon-cloudwatch-agent",
-      "sudo systemctl start amazon-cloudwatch-agent",
-      "sudo rm ./amazon-cloudwatch-agent.deb",
-
+      # Set up services
       "sudo systemctl daemon-reload",
-      "sudo systemctl enable webapp",
-      "sudo systemctl start webapp",
-      "sudo systemctl restart webapp",
-      "sudo systemctl status webapp",
-      "sudo systemctl enable amazon-cloudwatch-agent",
-      "sudo systemctl start amazon-cloudwatch-agent",
+      "sudo systemctl enable amazon-cloudwatch-agent webapp",
+      "sudo systemctl start amazon-cloudwatch-agent webapp",
+
+      # Cleanup
+      "sudo rm -f ./amazon-cloudwatch-agent.deb",
+      "sudo rm -rf /home/admin/webapp.zip"
     ]
 
   }
