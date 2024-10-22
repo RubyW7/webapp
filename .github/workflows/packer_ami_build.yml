@@ -31,8 +31,8 @@ jobs:
 
       - name: Create Application Artifact
         run: |
-         mkdir artifacts
-         zip -r artifacts/webapp.zip . -x "*.git*"
+          mkdir artifacts
+          zip -r artifacts/webapp.zip . -x "*.git*"
 
       - name: Install Packer
         run: |
