@@ -36,40 +36,23 @@ jobs:
 
       - name: Install Packer
         run: |
-          PACKER_VERSION="1.11.2" 
-          PACKER_ZIP_FILE="packer_${PACKER_VERSION}_linux_amd64.zip"
-          PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/${PACKER_ZIP_FILE}"
-          echo "Downloading Packer from ${PACKER_URL}..."
-          wget $PACKER_URL
-          if [ $? -ne 0 ]; then
-            echo "Failed to download Packer"
-            exit 1
-          fi
-          echo "Unzipping Packer..."
-          unzip -o $PACKER_ZIP_FILE
-          sudo mv packer /usr/local/bin/
-          if [ $? -ne 0 ]; then
-            echo "Failed to move Packer to /usr/local/bin"
-            exit 1
-          fi
-          echo "Packer installation- successful"
-          packer --version
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install packer
 
       - name: Initialize Packer
         run: |
-          cd packer/templates
-          packer init .
+          packer init myapp-template.pkr.hcl
 
       - name: Build AMI
         run: |
-          cd packer/templates
           packer build myapp-template.pkr.hcl
 
-      - name: Retrieve and Share AMI
+      - name: Share AMI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1' 
         run: |
-          echo "Retrieving AMI ID..."
-          AMI_ID=$(aws ec2 describe-images --filters "Name=name,Values=your-ami-name" --query "Images[0].ImageId" --output text)
-          echo "AMI ID: $AMI_ID"
-          echo "Modifying AMI launch permissions..."
-          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add=[{UserId='703671935232'}]"
-          echo "Permissions modified for AMI ID $AMI_ID"
+          AMI_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d':' -f2)
+          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add={UserId=[703671935232]}" 
