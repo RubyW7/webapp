@@ -85,20 +85,28 @@ build {
       "sudo groupadd csye6225",
       "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
 
+      "sudo mkdir -p /opt/csye6225/webapp",
+      "sudo chown -R csye6225:csye6225 /opt/csye6225",
+      "sudo chmod -R 755 /opt/csye6225",
+
       # Update package list and upgrade the system
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
 
       # Install Node.js and npm
-      "sudo apt-get install -y nodejs npm",
+      "curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -",
+      "sudo apt-get install -y nodejs",
 
       # Install unzip utility
       "sudo apt-get install -y unzip",
       "sudo unzip -d /opt/csye6225/webapp /home/ubuntu/webapp.zip",
+      "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp",
+      "sudo chmod -R 755 /opt/csye6225/webapp",
       "sudo rm ~/webapp.zip",
 
       # Prepare the application directory
-      "cd /opt/csye6225/webapp && sudo npm i",
+      "cd /opt/csye6225/webapp",
+      "sudo -u csye6225 npm install",
       "sudo mkdir /opt/csye6225/webapp/logs",
       "sudo touch /opt/csye6225/webapp/logs/webapp.log",
       "sudo chown csye6225:csye6225 /opt/csye6225/webapp/logs/webapp.log",
