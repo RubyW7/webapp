@@ -93,9 +93,8 @@ build {
       "sudo apt-get install -y nodejs npm",
 
       # Install unzip utility
-      "sudo chown csye6225:csye6225 /home/ubuntu/webapp.zip",
       "sudo apt-get install -y unzip",
-      "sudo -u csye6225 unzip -d /opt/csye6225/webapp ~/webapp.zip",
+      "sudo unzip -d /opt/csye6225/webapp /home/ubuntu/webapp.zip",
       "sudo rm ~/webapp.zip",
 
       # Prepare the application directory
