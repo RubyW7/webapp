@@ -93,6 +93,7 @@ build {
       "sudo apt-get install -y nodejs npm",
 
       # Install unzip utility
+      "sudo chmod a+r /home/ubuntu/webapp.zip",
       "sudo apt-get install -y unzip",
       "sudo -u csye6225 unzip -d /opt/csye6225/webapp ~/webapp.zip",
       "sudo rm ~/webapp.zip",
