@@ -68,6 +68,11 @@ build {
     destination = "/tmp/webapp.service"
   }
 
+  provisioner "file" {
+    source      = "./systemd/cloudwatch-config.json"
+    destination = "/tmp/cloudwatch-config.json"
+  }
+
   provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
@@ -111,6 +116,22 @@ build {
       "sudo touch /opt/csye6225/webapp/logs/webapp.log",
       "sudo chown csye6225:csye6225 /opt/csye6225/webapp/logs/webapp.log",
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp/logs",
+
+      # Download cloudwatch agent
+      "wget https://amazoncloudwatch-agent.s3.amazonaws.com/debian/amd64/latest/amazon-cloudwatch-agent.deb",
+
+      # Install cloudwatch agent
+      "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
+
+      # Delete the installer
+      "sudo rm ./amazon-cloudwatch-agent.deb",
+
+      # Move the cloudwatch config file to user's webapp folder with sudo
+      "sudo mv /tmp/cloudwatch-config.json /opt/csye6225/webapp/cloudwatch-config.json",
+
+      # Change ownership of the config file
+      "sudo chown csye6225:csye6225 /opt/csye6225/webapp/cloudwatch-config.json",
+
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
       "sudo apt-get remove --purge -y git",
 
