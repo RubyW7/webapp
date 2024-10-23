@@ -75,6 +75,8 @@ build {
     ]
 
     inline = [
+      "sudo ls -l ~/webapp.zip",
+      "sudo ls -l /tmp/webapp.service",
       # Update packege
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
