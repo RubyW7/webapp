@@ -32,13 +32,8 @@ jobs:
       - name: Create Application Artifact
         run: zip -r webapp.zip .
 
-      - name: Install Packer
-        run: |
-          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update && sudo apt install packer
-          sudo mv packer usr/local/bin/
-          packer --version
+      - name: Setup Packer
+        run: hashicorp/setup-packer@main
 
       - name: Initialize Packer
         run: packer init myapp-template.pkr.hcl
