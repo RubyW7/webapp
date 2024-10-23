@@ -32,17 +32,6 @@ jobs:
       - name: Create Application Artifact
         run: zip -r webapp.zip .
 
-      - name: Create variables.json
-        run: |
-          echo '{
-            "aws_region": "${{vars.AWS_REGION}}",
-            "source_ami": "${{vars.SOURCE_AMI}}",
-            "ssh_username": "${{vars.SSH_USERNAME}}",
-            "subnet_id": "${{vars.SUBNET_ID}}",
-            "artifact_path": "./webapp.zip",
-            "ami_users": ["${{secrets.AWS_DEMO_USER_ID}}"]
-          }' > variables.json
-
       - name: Setup Packer
         uses: hashicorp/setup-packer@main
         with:
