@@ -3,7 +3,7 @@ name: Build and Share AMI
 on:
   push:
     branches:
-      - main
+      - a4-review2
 
 jobs:
   build_and_share_ami:
