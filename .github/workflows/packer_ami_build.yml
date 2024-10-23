@@ -32,6 +32,12 @@ jobs:
       - name: Create Application Artifact
         run: zip -r webapp.zip .
 
+      - name: Create variables.json with only region
+        run: |
+          echo '{
+            "aws_region": "${{vars.AWS_REGION}}"
+          }' > variables.json
+
       - name: Setup Packer
         uses: hashicorp/setup-packer@main
         with:
@@ -47,7 +53,12 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
+          aws-region: ${{ secrets.AWS_REGION }}
+        id: get-latest-ami
         run: |
-          AMI_ID=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d':' -f2)
-          aws ec2 modify-image-attribute --image-id $AMI_ID --launch-permission "Add={UserId=[703671935232]}"
+          latest_ami=$(aws ec2 describe-images \
+                  --owners ${{secrets.AWS_DEV_USER_ID}} \
+                  --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
+                  --region ${{vars.AWS_REGION}})
+          echo "Latest AMI ID: $latest_ami"
+          aws ec2 modify-image-attribute --image-id $latest_ami --launch-permission "Add=[{UserId: '${{secrets.AWS_DEV_USER_ID}}'}]"
