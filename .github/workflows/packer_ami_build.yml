@@ -34,12 +34,11 @@ jobs:
 
       - name: Setup Packer
         run: hashicorp/setup-packer@main
+        with:
+          version: "1.10.0"
 
       - name: Initialize Packer
         run: packer init myapp-template.pkr.hcl
-        id: setup
-        with:
-          version: "1.10.0"
 
       - name: Build AMI
         run: packer build myapp-template.pkr.hcl
