@@ -33,7 +33,7 @@ jobs:
         run: zip -r webapp.zip .
 
       - name: Setup Packer
-        run: hashicorp/setup-packer@main
+        uses: hashicorp/setup-packer@main
         with:
           version: "1.10.0"
 
