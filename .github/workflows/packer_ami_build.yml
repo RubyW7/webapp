@@ -50,10 +50,6 @@ jobs:
         run: packer build myapp-template.pkr.hcl
 
       - name: Share AMI
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-east-1"
         id: get-latest-ami
         run: |
           latest_ami=$(aws ec2 describe-images \
