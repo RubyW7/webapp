@@ -98,7 +98,7 @@ build {
       "sudo rm ~/webapp.zip",
 
       # Prepare the application directory
-      "cd /opt/csye6225/webapp && sudo -u csye6225 npm i",
+      "cd /opt/csye6225/webapp && sudo npm i",
       "sudo mkdir /opt/csye6225/webapp/logs",
       "sudo touch /opt/csye6225/webapp/logs/webapp.log",
       "sudo chown csye6225:csye6225 /opt/csye6225/webapp/logs/webapp.log",
