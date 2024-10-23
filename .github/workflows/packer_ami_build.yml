@@ -50,10 +50,6 @@ jobs:
         run: packer build myapp-template.pkr.hcl
 
       - name: Share AMI
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
         id: get-latest-ami
         run: |
           latest_ami=$(aws ec2 describe-images \
@@ -61,4 +57,4 @@ jobs:
                   --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
                   --region ${{vars.AWS_REGION}})
           echo "Latest AMI ID: $latest_ami"
-          aws ec2 modify-image-attribute --image-id $latest_ami --launch-permission "Add=[{UserId: '${{secrets.AWS_DEV_USER_ID}}'}]"
+          aws ec2 modify-image-attribute --image-id $latest_ami --launch-permission "Add={UserId=[703671935232]}"
