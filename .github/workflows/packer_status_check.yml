@@ -34,6 +34,6 @@ jobs:
       - name: Check Packer Template Formatting
         run: |
           if ! packer fmt -check myapp-template.pkr.hcl; then
-            echo "Packer template is not formatted correctly. Please format using 'packer fmt debian12.pkr.hcl' and re-push."
+            echo "Packer template is not formatted correctly. Please format using 'packer fmt' and re-push."
             exit 1
           fi
