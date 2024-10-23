@@ -4,7 +4,7 @@
 name: Node.js CI
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
     types: [opened, synchronize, reopened]
@@ -13,7 +13,7 @@ jobs:
   prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:

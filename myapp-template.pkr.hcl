@@ -75,9 +75,13 @@ build {
     ]
 
     inline = [
+      # Update packege
+      "sudo apt-get update",
+      "sudo apt-get upgrade -y",
+
       # Set up user
       "sudo groupadd csye6225",
-      "sudo useradd -g csye6225 -s /usr/sbin/nologin csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
     
       # Update package list and upgrade the system
       "sudo apt-get update",
@@ -99,7 +103,7 @@ build {
       "sudo chmod -R csye6225:csye6225 /opt/csye6225/webapp/logs",
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
       "sudo apt-get remove --purge -y git",
-      
+
       # set ownership to csye6225:csye6225
       "sudo chown csye6225:csye6225 /etc/systemd/system/webapp.service",
       "sudo chmod -R 700 /opt/csye6225",
