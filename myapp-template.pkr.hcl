@@ -89,7 +89,7 @@ build {
       # Install unzip utility
       "sudo apt-get install -y unzip",
       "sudo -u csye6225 unzip -d /opt/csye6225/webapp ~/webapp.zip",
-      "sudo rm ~/webapp.zip"
+      "sudo rm ~/webapp.zip",
 
       # Prepare the application directory
       "cd /opt/csye6225/webapp && sudo -u csye6225 npm i",
@@ -98,8 +98,8 @@ build {
       "sudo chown 766 /opt/csye6225/webapp/logs/webapp.log",
       "sudo chmod -R csye6225:csye6225 /opt/csye6225/webapp/logs",
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
-
       "sudo apt-get remove --purge -y git",
+      
       # set ownership to csye6225:csye6225
       "sudo chown csye6225:csye6225 /etc/systemd/system/webapp.service",
       "sudo chmod -R 700 /opt/csye6225",
