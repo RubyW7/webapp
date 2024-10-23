@@ -83,7 +83,7 @@ build {
       # Set up user
       "sudo groupadd csye6225",
       "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
-    
+
       # Update package list and upgrade the system
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
