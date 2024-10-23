@@ -1,16 +1,20 @@
 [Unit]
-Description=Web-App
-After=network.target cloud-init.service
-Wants=cloud-init.service
+Description=Webapp Service
+After=network.target cloud-init.target
+DefaultDependencies=no
+ConditionPathExists=/opt/csye6225/webapp
 
 [Service]
-EnvironmentFile=/opt/csye6225/web-app/.env
 Type=simple
 User=csye6225
-ExecStart=/usr/bin/node /opt/csye6225/web-app/app.js
+Group=csye6225
+WorkingDirectory=/opt/csye6225/webapp
+ExecStart=/bin/bash -c 'ls -al && /usr/bin/node server.js'
 Restart=always
-RestartSec=10
-WorkingDirectory=/opt/csye6225/web-app
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=csye6225
 
 [Install]
-WantedBy=cloud-init.target
+WantedBy=multi-user.target
