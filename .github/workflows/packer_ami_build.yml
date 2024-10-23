@@ -57,5 +57,5 @@ jobs:
                   --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
                   --region ${{vars.AWS_REGION}})
           echo "Latest AMI ID: $latest_ami"
-          aws ec2 modify-image-attribute --image-id $latest_ami --launch-permission "Add=[{UserId:'703671935232'}]" \
+          aws ec2 modify-image-attribute --image-id $latest_ami --launch-permission "Add=[{UserId=703671935232}]" \
                   --region ${{vars.AWS_REGION}}
