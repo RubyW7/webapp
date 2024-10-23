@@ -120,7 +120,7 @@ build {
       "sudo chown -R csye6225:csye6225 /opt/csye6225/webapp/logs",
 
       # Download cloudwatch agent
-      "wget https://amazoncloudwatch-agent.s3.amazonaws.com/debian/amd64/latest/amazon-cloudwatch-agent.deb",
+      "sudo wget https://amazoncloudwatch-agent.s3.amazonaws.com/debian/amd64/latest/amazon-cloudwatch-agent.deb",
 
       # Install cloudwatch agent
       "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
@@ -137,7 +137,7 @@ build {
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
 
       # Install PostgreSQL
-      "apt install postgresql",
+      "sudo apt install postgresql",
       "sudo apt install -y postgresql-common",
       "sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh",
 
