@@ -82,7 +82,7 @@ build {
     inline = [
       "sudo ls -l ~/webapp.zip",
       "sudo ls -l /tmp/webapp.service",
-      
+
       # Update packege
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
@@ -113,6 +113,7 @@ build {
       # Prepare the application directory
       "cd /opt/csye6225/webapp",
       "sudo -u csye6225 npm install",
+      "sudo -u csye6225 npm install dotenv",
       "sudo mkdir /opt/csye6225/webapp/logs",
       "sudo touch /opt/csye6225/webapp/logs/webapp.log",
       "sudo chown csye6225:csye6225 /opt/csye6225/webapp/logs/webapp.log",
@@ -134,9 +135,20 @@ build {
       "sudo chown csye6225:csye6225 /opt/csye6225/webapp/cloudwatch-config.json",
 
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
-      "sudo apt-get remove --purge -y git",
+
+      # Install PostgreSQL
+      "apt install postgresql",
+      "sudo apt install -y postgresql-common",
+      "sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh",
+
+      # Configure PostgreSQL to listen only on localhost (ignoring DB_HOST since it must be localhost for security reasons)
+      "sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = 'localhost'/g\" /etc/postgresql/12/main/postgresql.conf",
+
+      # Restart PostgreSQL to apply configuration changes
+      "sudo systemctl restart postgresql",
 
       # set ownership to csye6225:csye6225
+      "sudo apt-get remove --purge -y git",
       "sudo chown csye6225:csye6225 /etc/systemd/system/webapp.service",
       "sudo chmod -R 700 /opt/csye6225",
 
