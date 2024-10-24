@@ -1,9 +1,9 @@
-const { Client } = require('pg');
-require('dotenv').config();
+const { Client } = require("pg");
+require("dotenv").config();
 
 const client = new Client({
-  user: process.env.DB_USER,  
-  host: process.env.DB_HOST, 
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
@@ -27,9 +27,9 @@ const createDatabase = async () => {
 
     await client.query(`CREATE DATABASE ${process.env.DB_NAME};`);
 
-    console.log('Database setup complete.');
+    console.log("Database setup complete.");
   } catch (err) {
-    console.error('Error creating database or user:', err);
+    console.error("Error creating database or user:", err);
   } finally {
     await client.end();
   }
