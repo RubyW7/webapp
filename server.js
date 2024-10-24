@@ -1,5 +1,5 @@
 const app = require("./app");
-const { initializeDatabase } = require('./services/databaseService'); 
+const { initializeDatabase } = require("./services/databaseService");
 
 initializeDatabase()
   .then(() => {
@@ -9,5 +9,5 @@ initializeDatabase()
     });
   })
   .catch((err) => {
-    console.error('Error during database initialization:', err);
+    console.error("Error during database initialization:", err);
   });

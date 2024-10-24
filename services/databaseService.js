@@ -1,5 +1,5 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config(); 
+const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
 const dbName = process.env.DB_NAME;
 const dbUser = process.env.DB_USER;
@@ -7,10 +7,10 @@ const dbPassword = process.env.DB_PASSWORD;
 const dbHost = process.env.DB_HOST;
 const dbPort = process.env.DB_PORT || 5432;
 
-const sequelizeAdmin = new Sequelize('postgres', 'postgres', 'Wyd0718520', {
+const sequelizeAdmin = new Sequelize("postgres", "postgres", "Wyd0718520", {
   host: dbHost,
   port: dbPort,
-  dialect: 'postgres',
+  dialect: "postgres",
 });
 
 async function createDatabaseAndUser() {
@@ -42,9 +42,8 @@ async function createDatabaseAndUser() {
     $do$;`);
 
     console.log(`Database "${dbName}" checked or created.`);
-
   } catch (error) {
-    console.error('Error while creating database or user:', error);
+    console.error("Error while creating database or user:", error);
   }
 }
 
@@ -55,17 +54,16 @@ async function initializeDatabase() {
     const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
       host: dbHost,
       port: dbPort,
-      dialect: 'postgres',
+      dialect: "postgres",
     });
 
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    console.log("Connection has been established successfully.");
 
     await sequelize.sync({ alter: true });
-    console.log('Models synchronized.');
-
+    console.log("Models synchronized.");
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error("Unable to connect to the database:", error);
     throw error;
   }
 }
