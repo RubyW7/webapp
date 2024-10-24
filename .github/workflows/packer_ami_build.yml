@@ -20,21 +20,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install PostgreSQL
-        run: |
-          sudo apt-get update
-          sudo apt install postgresql
-          sudo apt install -y postgresql-common
-
-      - name: Setup environment variables
-        run: |
-          touch .env
-          echo DB_USER=${{ secrets.DB_USER }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-
       - name: Create Application Artifact
         run: zip -r webapp.zip .
 
