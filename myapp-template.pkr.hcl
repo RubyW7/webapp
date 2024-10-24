@@ -136,14 +136,6 @@ build {
 
       "sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service",
 
-      # Install PostgreSQL
-      "sudo apt-get update",
-      "sudo apt-get -y install postgresql postgresql-contrib",
-      "sudo systemctl start postgresql",
-
-      # Configure PostgreSQL to listen only on localhost (ignoring DB_HOST since it must be localhost for security reasons)
-      "sudo sed -i \"s/#listen_addresses = 'localhost'/listen_addresses = 'localhost'/g\" /etc/postgresql/12/main/postgresql.conf",
-
       # set ownership to csye6225:csye6225
       "sudo apt-get remove --purge -y git",
       "sudo chown csye6225:csye6225 /etc/systemd/system/webapp.service",

@@ -1,13 +1,13 @@
 const app = require("./app");
-const sequelize = require("./config/db");
+const { initializeDatabase } = require('./services/databaseService'); 
 
-sequelize
-  .sync({ alter: true })
+initializeDatabase()
   .then(() => {
-    console.log("Database synchronized");
-    const PORT = 8080;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   })
   .catch((err) => {
-    console.error("Error synchronizing the database:", err);
+    console.error('Error during database initialization:', err);
   });
