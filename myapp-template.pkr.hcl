@@ -11,7 +11,6 @@ variable "ssh_username" {
 variable "source_ami" {
   type    = string
   default = "vpc-0acefcad24c0b914b"
-"
 }
 
 variable "subnet_id" {
