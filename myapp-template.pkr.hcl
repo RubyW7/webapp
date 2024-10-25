@@ -10,12 +10,12 @@ variable "ssh_username" {
 
 variable "source_ami" {
   type    = string
-  default = "ami-0887e1d5e322290cf"
+  default = "ubuntu"
 }
 
 variable "subnet_id" {
   type    = string
-  default = "subnet-02d41e81eddf16052"
+  default = ""
 }
 
 variable "ami_users" {
