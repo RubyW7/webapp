@@ -11,6 +11,6 @@ routes.get('/ping', (req, res) => {
 
 routes.post('/self/pic', authenticate, uploadProfilePic);
 routes.get('/self/pic', authenticate, getProfilePic);
-routes.delete('/files/:filename', deleteProfilePic);
+routes.delete('/self/pic', authenticate, deleteProfilePic);
 
 module.exports = routes;

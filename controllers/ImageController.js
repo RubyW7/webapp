@@ -1,4 +1,4 @@
-const { deleteFromS3, generatePresignedURL, uploadToS3 } = require("../utils/functions");
+const { deleteFromS3, uploadToS3 } = require("../utils/functions");
 const s3Config = require("../config/s3Config");
 const { v4: uuidv4 } = require('uuid');
 const moment = require('moment');
@@ -34,7 +34,7 @@ exports.uploadProfilePic = async (req, res) => {
             const upload_date = moment().format("YYYY-MM-DD");
 
             // upldate user.profile_image
-            user.profile_image = req.files.profilePic.name;
+            user.profile_image = result.filename;;
             user.upload_date = upload_date;
             await user.save(); 
 
@@ -95,19 +95,22 @@ exports.getProfilePic = async (req, res) => {
 
 exports.deleteProfilePic = async (req, res) => {
     try {
-        if (req.params.filename) {
-            // Delete file
-            const result = await deleteFromS3(req.params.filename, s3Config.aws.bucket);
-            return res.status(200).json({
-                message: "Success",
-                body: result
-            });
+        const userId = req.user.id;
+        const user = await User.findByPk(userId);
+
+        if (!user.profile_image) {
+            return res.status(404).json({ message: "Profile picture not found." });
         }
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({
-            message: "Something went wrong!"
-        });
+
+        const filename = user.profile_image;
+        await deleteFromS3(filename, s3Config.aws.bucket); 
+        user.profile_image = null;
+        user.upload_date = null; 
+        await user.save();
+
+        return res.status(204).send();
+    } catch (error) {
+        console.error("Error in deleteProfilePic:", error);
+        return res.status(500).json({ message: "Something went wrong!" });
     }
 };
-
