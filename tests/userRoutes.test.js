@@ -13,9 +13,9 @@ jest.mock("../middleware/auth", () =>
 
 const app = express();
 app.use(bodyParser.json());
-app.get("/v1/user/self", authenticate, userController.getUser);
-app.post("/v1/user", userController.createUser);
-app.put("/v1/user/self", authenticate, userController.updateUser);
+app.get("/v2/user/self", authenticate, userController.getUser);
+app.post("/v2/user", userController.createUser);
+app.put("/v2/user/self", authenticate, userController.updateUser);
 
 jest.mock("../controllers/userController", () => ({
   getUser: jest.fn((req, res) =>
@@ -32,20 +32,20 @@ jest.mock("../controllers/userController", () => ({
 describe("User Routes", () => {
   it("should create a new user", async () => {
     const newUser = { email: "newuser@example.com", password: "password123" };
-    const response = await request(app).post("/v1/user").send(newUser);
+    const response = await request(app).post("/v2/user").send(newUser);
     expect(response.statusCode).toBe(201);
     expect(response.body.email).toEqual(newUser.email);
   });
 
   it("should get the user details", async () => {
-    const response = await request(app).get("/v1/user/self");
+    const response = await request(app).get("/v2/user/self");
     expect(response.statusCode).toBe(200);
     expect(response.body.email).toBe("test@example.com");
   });
 
   it("should update the user details", async () => {
     const updates = { email: "updated@example.com" };
-    const response = await request(app).put("/v1/user/self").send(updates);
+    const response = await request(app).put("/v2/user/self").send(updates);
     expect(response.statusCode).toBe(200);
     expect(response.body.email).toBe(updates.email);
   });

@@ -6,11 +6,11 @@ const userController = require("../controllers/userController");
 const router = express.Router();
 
 //get user information with auth
-router.get("/v1/user/self", authenticate, userController.getUser);
+router.get("/v2/user/self", authenticate, userController.getUser);
 
 // create new user
 router.post(
-  "/v1/user",
+  "/v2/user",
   body("email").isEmail().withMessage("Invalid email format"),
   body("password")
     .isLength({ min: 6 })
@@ -20,7 +20,7 @@ router.post(
 
 // update user information with auth
 router.put(
-  "/v1/user/self",
+  "/v2/user/self",
   authenticate,
   body("email").optional().isEmail().withMessage("Invalid email format"),
   body("password")
@@ -30,19 +30,19 @@ router.put(
   userController.updateUser,
 );
 
-router.head("/v1/user/*", (req, res) => {
+router.head("/v2/user/*", (req, res) => {
   return res.status(405).send();
 });
 
-router.head("/v1/user", (req, res) => {
+router.head("/v2/user", (req, res) => {
   return res.status(405).send();
 });
 
-router.all("/v1/user/*", (req, res) => {
+router.all("/v2/user/*", (req, res) => {
   return res.status(405).send();
 });
 
-router.all("/v1/user", (req, res) => {
+router.all("/v2/user", (req, res) => {
   return res.status(405).send();
 });
 
