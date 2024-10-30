@@ -4,6 +4,10 @@ const { v4: uuidv4 } = require('uuid');
 const moment = require('moment');
 const User = require('../models/user');
 
+const generateFileUrl = (userId, filename) => {
+    return `${s3Config.aws.bucket}/${userId}/${filename}`;
+};
+
 exports.uploadProfilePic = async (req, res) => {
     try {
         if (req.files && req.files.profilePic) {
@@ -27,16 +31,20 @@ exports.uploadProfilePic = async (req, res) => {
                     message: "Failed to upload image to S3."
                 });
             }
+            const upload_date = moment().format("YYYY-MM-DD");
 
             // upldate user.profile_image
             user.profile_image = req.files.profilePic.name;
+            user.upload_date = upload_date;
             await user.save(); 
+
+            const url = generateFileUrl(userId, user.profile_image);
 
             const responseBody = {
                 file_name: req.files.profilePic.name,
                 id: uuidv4(),
-                url: result.Location,
-                upload_date: moment().format("YYYY-MM-DD"),
+                url: url,
+                upload_date: upload_date,
                 user_id: userId,
             };
 
@@ -59,6 +67,31 @@ exports.uploadProfilePic = async (req, res) => {
     }
 };
 
+exports.getProfilePic = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findByPk(userId);
+
+        if (!user.profile_image) {
+            return res.status(404).json({ message: "Profile picture not found." });
+        }
+
+        const url = generateFileUrl(userId, user.profile_image);
+
+        const responseBody = {
+            file_name: user.profile_image,
+            id: user.id,
+            url: url,
+            upload_date: moment(user.upload_date).format("YYYY-MM-DD"),
+            user_id: user.id,
+        };
+
+        return res.status(200).json(responseBody);
+    } catch (error) {
+        console.error("Error in getProfilePic:", error);
+        return res.status(500).json({ message: "Something went wrong!" });
+    }
+};
 
 exports.deleteProfilePic = async (req, res) => {
     try {

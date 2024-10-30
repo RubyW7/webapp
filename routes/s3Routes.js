@@ -10,13 +10,7 @@ routes.get('/ping', (req, res) => {
 });
 
 routes.post('/self/pic', authenticate, uploadProfilePic);
-//routes.get('/self/pic', authenticate, getProfilePic);
+routes.get('/self/pic', authenticate, getProfilePic);
 routes.delete('/files/:filename', deleteProfilePic);
-
-routes.use((req, res) => {
-    const error = new Error('Not found!');
-    console.error(error);
-    return res.status(404).json({ message: error.message });
-});
 
 module.exports = routes;

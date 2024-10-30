@@ -37,6 +37,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    upload_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     account_updated: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
