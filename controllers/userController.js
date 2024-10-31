@@ -5,6 +5,7 @@ const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
 
 exports.getUser = async (req, res) => {
+  const start = process.hrtime.bigint();
   logger.info("GET: ENTERING getUser controller method");
   statsDClient.increment("endpoints.request.http.get.getUser");
   try {
@@ -19,6 +20,11 @@ exports.getUser = async (req, res) => {
     const user = req.user;
     res.header("Accept", "application/json");
     statsDClient.increment("endpoints.response.http.get.success.getUser");
+    const duration = process.hrtime.bigint() - start;
+    statsDClient.timing(
+      "endpoints.timing.http.get.getUser",
+      Number(duration / 1000000n),
+    );
     return res.status(200).json({
       id: user.id,
       first_name: user.first_name,
@@ -36,6 +42,7 @@ exports.getUser = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  const start = process.hrtime.bigint();
   logger.info("POST: ENTERING createUser controller method");
   statsDClient.increment("endpoints.request.http.post.createUser");
   if (Object.keys(req.query).length > 0) {
@@ -72,6 +79,11 @@ exports.createUser = async (req, res) => {
       password,
     });
     res.header("Accept", "application/json");
+    const duration = process.hrtime.bigint() - start;
+    statsDClient.timing(
+      "endpoints.timing.http.post.createUser",
+      Number(duration / 1000000n),
+    );
     statsDClient.increment("endpoints.response.http.post.success.createUser");
     return res.status(201).json({
       id: newUser.id,

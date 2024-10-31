@@ -2,7 +2,7 @@ const StatsD = require("node-statsd");
 
 const client = new StatsD({
   prefix: "webapp",
-  host: "localhost",
+  host: process.env.HOST || "localhost",
   port: 8125,
 });
 

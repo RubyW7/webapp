@@ -1,25 +1,45 @@
 const sequelize = require("../config/db");
+const logger = require("../utils/logger"); // Make sure to configure this path correctly
+const statsDClient = require("../utils/metrics"); // Make sure to configure this path correctly
 
 const healthCheck = async (req, res) => {
-  // Check if there are no query parameters
-  if (Object.keys(req.query).length === 0) {
-    if (req.body && Object.keys(req.body).length > 0) {
-      return res.status(400).send();
-    }
+  const start = process.hrtime.bigint(); // Start timing here
+  statsDClient.increment("endpoint.healthCheck.hit");
+  logger.info("Entering healthCheck method");
 
-    try {
-      // use sequelize to verify database connection
-      await sequelize.authenticate();
-      res.set("Cache-Control", "no-cache, no-store, must-revalidate");
-      return res.status(200).send();
-    } catch (error) {
-      console.error("Connection error:", error);
-      res.set("Cache-Control", "no-cache, no-store, must-revalidate");
-      return res.status(503).send();
-    }
-  } else {
-    // Return error if there are any query parameters
+  if (Object.keys(req.query).length > 0) {
+    logger.warn("HealthCheck called with invalid query parameters");
+    statsDClient.increment("endpoint.healthCheck.fail.queryParameters");
     return res.status(400).send({ error: "Invalid query parameters" });
+  }
+
+  if (req.body && Object.keys(req.body).length > 0) {
+    logger.warn("HealthCheck called with invalid body parameters");
+    statsDClient.increment("endpoint.healthCheck.fail.bodyParameters");
+    return res.status(400).send({ error: "Invalid body parameters" });
+  }
+
+  try {
+    await sequelize.authenticate();
+    const duration = process.hrtime.bigint() - start; // Calculate duration
+    statsDClient.timing(
+      "endpoint.healthCheck.duration",
+      Number(duration / 1000000n),
+    ); // Log the duration in milliseconds
+    logger.info("Database connection verified successfully");
+    statsDClient.increment("endpoint.healthCheck.success");
+    res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.status(200).send();
+  } catch (error) {
+    const duration = process.hrtime.bigint() - start;
+    statsDClient.timing(
+      "endpoint.healthCheck.duration",
+      Number(duration / 1000000n),
+    );
+    logger.error("Connection error during health check", error);
+    statsDClient.increment("endpoint.healthCheck.failure");
+    res.set("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.status(503).send();
   }
 };
 
