@@ -11,6 +11,7 @@ const generateFileUrl = (userId, filename) => {
 };
 
 exports.uploadProfilePic = async (req, res) => {
+  const start = process.hrtime.bigint();
   statsDClient.increment("endpoint.uploadProfilePic.hit");
   logger.info("Entering uploadProfilePic method");
 
@@ -57,6 +58,9 @@ exports.uploadProfilePic = async (req, res) => {
       };
 
       statsDClient.increment("endpoint.uploadProfilePic.success");
+      const duration = process.hrtime.bigint() - start;
+      statsDClient.timing("endpoint.uploadProfilePic.duration", Number(duration / 1000000n)); 
+
       return res.status(201).json({
         message: "Success",
         body: responseBody,
@@ -79,6 +83,7 @@ exports.uploadProfilePic = async (req, res) => {
 
 exports.getProfilePic = async (req, res) => {
   // Increment the hit counter for this endpoint
+  const start = process.hrtime.bigint();
   statsDClient.increment("endpoint.getProfilePic.hit");
   logger.info("Entering getProfilePic method");
 
@@ -107,6 +112,9 @@ exports.getProfilePic = async (req, res) => {
 
     // Successful retrieval of profile picture
     statsDClient.increment("endpoint.getProfilePic.success");
+    const duration = process.hrtime.bigint() - start;
+    statsDClient.timing("endpoint.getProfilePic.duration", Number(duration / 1000000n));
+
     logger.info(
       `Profile picture retrieved successfully for user ID: ${userId}`,
     );
@@ -122,6 +130,7 @@ exports.getProfilePic = async (req, res) => {
 
 exports.deleteProfilePic = async (req, res) => {
   // Increment the hit counter for this endpoint
+  const start = process.hrtime.bigint();
   statsDClient.increment("endpoint.deleteProfilePic.hit");
   logger.info("Entering deleteProfilePic method");
 
@@ -149,6 +158,9 @@ exports.deleteProfilePic = async (req, res) => {
 
     // Successfully deleted the profile picture
     statsDClient.increment("endpoint.deleteProfilePic.success");
+    const duration = process.hrtime.bigint() - start;
+    statsDClient.timing("endpoints.deleteProfilePic.duration", Number(duration / 1000000n));
+
     logger.info(
       `Profile picture data removed from database for user ID: ${userId}`,
     );
