@@ -7,7 +7,7 @@ const logger = winston.createLogger({
     winston.format.json(),
   ),
   transports: [
-    new winston.transports.Console(), // Log to the console
+    new winston.transports.Console(),
     new winston.transports.File({
       filename: "/opt/csye6225/webapp/logs/webapp.log",
     }), // Log errors to a file
