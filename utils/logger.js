@@ -10,7 +10,7 @@ const logger = winston.createLogger({
     new winston.transports.Console(),
     new winston.transports.File({
       filename: "/opt/csye6225/webapp/logs/webapp.log",
-    }), // Log errors to a file
+    }),
   ],
 });
 
