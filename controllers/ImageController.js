@@ -31,10 +31,10 @@ exports.uploadProfilePic = async (req, res) => {
         });
       }
 
-      const result = await uploadToS3(
-        req.files.profilePic,
-        s3Config.aws.bucket,
-      );
+      const result = await statsDClient.timer("s3.upload", async () => {
+        return uploadToS3(req.files.profilePic, s3Config.aws.bucket);
+      });
+
       if (!result) {
         logger.error(`Failed to upload image to S3 for user ${userId}.`);
         statsDClient.increment("endpoint.uploadProfilePic.fail.s3Upload");
@@ -153,7 +153,9 @@ exports.deleteProfilePic = async (req, res) => {
     }
 
     const filename = user.profile_image;
-    await deleteFromS3(filename, s3Config.aws.bucket);
+    await statsDClient.timer("s3.delete", async () => {
+      await deleteFromS3(filename, s3Config.aws.bucket);
+    });
     logger.info(
       `Profile picture ${filename} deleted from S3 for user ID: ${userId}`,
     );
