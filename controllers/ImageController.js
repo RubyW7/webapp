@@ -5,7 +5,6 @@ const moment = require("moment");
 const User = require("../models/user");
 const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
-
 const generateFileUrl = (userId, filename) => {
   return `${s3Config.aws.bucket}/${userId}/${filename}`;
 };
@@ -22,7 +21,6 @@ exports.uploadProfilePic = async (req, res) => {
       logger.info(
         `Current profile_image for user ${userId}: ${user.profile_image}`,
       );
-
       if (user.profile_image) {
         logger.warn(`User ${userId} already has a profile picture.`);
         return res.status(400).json({
@@ -30,11 +28,10 @@ exports.uploadProfilePic = async (req, res) => {
             "Profile picture already exists. Please delete it before uploading a new one.",
         });
       }
-
-      const result = await statsDClient.timer("s3.upload", async () => {
-        return uploadToS3(req.files.profilePic, s3Config.aws.bucket);
-      });
-
+      const result = await uploadToS3(
+        req.files.profilePic,
+        s3Config.aws.bucket,
+      );
       if (!result) {
         logger.error(`Failed to upload image to S3 for user ${userId}.`);
         statsDClient.increment("endpoint.uploadProfilePic.fail.s3Upload");
@@ -42,13 +39,10 @@ exports.uploadProfilePic = async (req, res) => {
           message: "Failed to upload image to S3.",
         });
       }
-
       user.profile_image = result.filename;
       user.upload_date = moment().format("YYYY-MM-DD");
       await user.save();
-
       const url = generateFileUrl(userId, user.profile_image);
-
       const responseBody = {
         file_name: req.files.profilePic.name,
         id: uuidv4(),
@@ -93,18 +87,14 @@ exports.getProfilePic = async (req, res) => {
   try {
     const userId = req.user.id;
     logger.debug(`Fetching profile picture for user ID: ${userId}`);
-
     const user = await User.findByPk(userId);
-
     if (!user.profile_image) {
       logger.warn(`Profile picture not found for user ID: ${userId}`);
       statsDClient.increment("endpoint.getProfilePic.notFound");
       return res.status(404).json({ message: "Profile picture not found." });
     }
-
     const url = generateFileUrl(userId, user.profile_image);
     const uploadDateFormatted = moment(user.upload_date).format("YYYY-MM-DD");
-
     const responseBody = {
       file_name: user.profile_image,
       id: user.id,
@@ -143,23 +133,17 @@ exports.deleteProfilePic = async (req, res) => {
   try {
     const userId = req.user.id;
     logger.debug(`Attempting to delete profile picture for user ID: ${userId}`);
-
     const user = await User.findByPk(userId);
-
     if (!user.profile_image) {
       logger.warn(`Profile picture not found for user ID: ${userId}`);
       statsDClient.increment("endpoint.deleteProfilePic.notFound");
       return res.status(404).json({ message: "Profile picture not found." });
     }
-
     const filename = user.profile_image;
-    await statsDClient.timer("s3.delete", async () => {
-      await deleteFromS3(filename, s3Config.aws.bucket);
-    });
+    await deleteFromS3(filename, s3Config.aws.bucket);
     logger.info(
       `Profile picture ${filename} deleted from S3 for user ID: ${userId}`,
     );
-
     user.profile_image = null;
     user.upload_date = null;
     await user.save();
