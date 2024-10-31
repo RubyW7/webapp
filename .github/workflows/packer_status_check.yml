@@ -17,9 +17,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Create Application Artifact
-        run: |
-          mkdir artifacts
-          zip -r artifacts/webapp.zip .
+        run: zip -r artifacts/webapp.zip .
 
       - name: Install Packer
         run: |
