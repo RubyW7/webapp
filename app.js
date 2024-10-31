@@ -12,7 +12,7 @@ app.use(fileUpload());
 
 app.use(express.json());
 app.use("/healthz", healthRoutes);
-app.use('/v1/user', s3Routes);
+app.use("/v1/user", s3Routes);
 app.use(userRoutes);
 
 module.exports = app;
