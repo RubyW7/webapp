@@ -21,7 +21,10 @@ exports.getUser = async (req, res) => {
     res.header("Accept", "application/json");
     statsDClient.increment("endpoints.response.http.get.success.getUser");
     const duration = process.hrtime.bigint() - start;
-    statsDClient.timing("endpoints.timing.http.get.getUser", Number(duration / 1000000n));
+    statsDClient.timing(
+      "endpoints.timing.http.get.getUser",
+      Number(duration / 1000000n),
+    );
     return res.status(200).json({
       id: user.id,
       first_name: user.first_name,
@@ -77,7 +80,10 @@ exports.createUser = async (req, res) => {
     });
     res.header("Accept", "application/json");
     const duration = process.hrtime.bigint() - start;
-    statsDClient.timing("endpoints.timing.http.post.createUser", Number(duration / 1000000n));
+    statsDClient.timing(
+      "endpoints.timing.http.post.createUser",
+      Number(duration / 1000000n),
+    );
     statsDClient.increment("endpoints.response.http.post.success.createUser");
     return res.status(201).json({
       id: newUser.id,

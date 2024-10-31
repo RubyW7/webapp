@@ -59,7 +59,10 @@ exports.uploadProfilePic = async (req, res) => {
 
       statsDClient.increment("endpoint.uploadProfilePic.success");
       const duration = process.hrtime.bigint() - start;
-      statsDClient.timing("endpoint.uploadProfilePic.duration", Number(duration / 1000000n)); 
+      statsDClient.timing(
+        "endpoint.uploadProfilePic.duration",
+        Number(duration / 1000000n),
+      );
 
       return res.status(201).json({
         message: "Success",
@@ -113,7 +116,10 @@ exports.getProfilePic = async (req, res) => {
     // Successful retrieval of profile picture
     statsDClient.increment("endpoint.getProfilePic.success");
     const duration = process.hrtime.bigint() - start;
-    statsDClient.timing("endpoint.getProfilePic.duration", Number(duration / 1000000n));
+    statsDClient.timing(
+      "endpoint.getProfilePic.duration",
+      Number(duration / 1000000n),
+    );
 
     logger.info(
       `Profile picture retrieved successfully for user ID: ${userId}`,
@@ -159,7 +165,10 @@ exports.deleteProfilePic = async (req, res) => {
     // Successfully deleted the profile picture
     statsDClient.increment("endpoint.deleteProfilePic.success");
     const duration = process.hrtime.bigint() - start;
-    statsDClient.timing("endpoints.deleteProfilePic.duration", Number(duration / 1000000n));
+    statsDClient.timing(
+      "endpoints.deleteProfilePic.duration",
+      Number(duration / 1000000n),
+    );
 
     logger.info(
       `Profile picture data removed from database for user ID: ${userId}`,
