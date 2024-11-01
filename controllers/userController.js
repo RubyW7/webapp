@@ -55,9 +55,7 @@ exports.createUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     logger.warn("POST: Validation errors in createUser");
-    statsDClient.increment(
-      "endpoints.createUser.fail.validationError",
-    );
+    statsDClient.increment("endpoints.createUser.fail.validationError");
     return res.status(400).json({ errors: errors.array() });
   }
 
@@ -66,9 +64,7 @@ exports.createUser = async (req, res) => {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       logger.warn("POST: User already exists - createUser");
-      statsDClient.increment(
-        "endpoints.createUserfail.userExists",
-      );
+      statsDClient.increment("endpoints.createUserfail.userExists");
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -106,18 +102,14 @@ exports.updateUser = async (req, res) => {
   statsDClient.increment("endpoints.updateUser.hit");
   if (Object.keys(req.query).length > 0 || Object.keys(req.body).length === 0) {
     logger.warn("PUT: Invalid request in updateUser");
-    statsDClient.increment(
-      "endpoints.updateUser.fail.requestValidation",
-    );
+    statsDClient.increment("endpoints.updateUser.fail.requestValidation");
     return res.status(400).send({ message: "Invalid request parameters" });
   }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     logger.warn("PUT: Validation errors in updateUser");
-    statsDClient.increment(
-      "endpoints.updateUser.fail.validationError",
-    );
+    statsDClient.increment("endpoints.updateUser.fail.validationError");
     return res.status(400).send({ errors: errors.array() });
   }
 
