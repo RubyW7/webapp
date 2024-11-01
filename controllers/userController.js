@@ -7,11 +7,11 @@ const statsDClient = require("../utils/metrics");
 exports.getUser = async (req, res) => {
   const start = process.hrtime.bigint();
   logger.info("GET: ENTERING getUser controller method");
-  statsDClient.increment("endpoints.request.http.get.getUser");
+  statsDClient.increment("endpoints.request.getUser.hit");
   try {
     if (Object.keys(req.query).length > 0) {
       logger.warn("GET: Invalid query parameters in getUser");
-      statsDClient.increment("endpoints.response.http.get.fail.getUser");
+      statsDClient.increment("endpoints.findUser.fail.getUser");
       return res
         .status(400)
         .send({ message: "Query parameters are not allowed" });
@@ -19,10 +19,10 @@ exports.getUser = async (req, res) => {
 
     const user = req.user;
     res.header("Accept", "application/json");
-    statsDClient.increment("endpoints.response.http.get.success.getUser");
+    statsDClient.increment("endpoints.getUser.success");
     const duration = process.hrtime.bigint() - start;
     statsDClient.timing(
-      "endpoints.timing.http.get.getUser",
+      "endpoints.timing.getUser",
       Number(duration / 1000000n),
     );
     return res.status(200).json({
@@ -35,7 +35,7 @@ exports.getUser = async (req, res) => {
     });
   } catch (error) {
     logger.error(`GET: getUser error - ${error}`);
-    statsDClient.increment("endpoints.response.http.get.failure.getUser");
+    statsDClient.increment("endpoints.findUser.failure.getUser");
     console.error("Error fetching user information:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
@@ -44,7 +44,7 @@ exports.getUser = async (req, res) => {
 exports.createUser = async (req, res) => {
   const start = process.hrtime.bigint();
   logger.info("POST: ENTERING createUser controller method");
-  statsDClient.increment("endpoints.request.http.post.createUser");
+  statsDClient.increment("endpoints.createUser.hit");
   if (Object.keys(req.query).length > 0) {
     logger.warn("POST: createUser called with query parameters");
     return res
@@ -55,9 +55,7 @@ exports.createUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     logger.warn("POST: Validation errors in createUser");
-    statsDClient.increment(
-      "endpoints.response.http.post.fail.validationError.createUser",
-    );
+    statsDClient.increment("endpoints.createUser.fail.validationError");
     return res.status(400).json({ errors: errors.array() });
   }
 
@@ -66,9 +64,7 @@ exports.createUser = async (req, res) => {
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       logger.warn("POST: User already exists - createUser");
-      statsDClient.increment(
-        "endpoints.response.http.post.fail.userExists.createUser",
-      );
+      statsDClient.increment("endpoints.createUserfail.userExists");
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -81,10 +77,10 @@ exports.createUser = async (req, res) => {
     res.header("Accept", "application/json");
     const duration = process.hrtime.bigint() - start;
     statsDClient.timing(
-      "endpoints.timing.http.post.createUser",
+      "endpoints.timing.createUser",
       Number(duration / 1000000n),
     );
-    statsDClient.increment("endpoints.response.http.post.success.createUser");
+    statsDClient.increment("endpoints.createUser.success");
     return res.status(201).json({
       id: newUser.id,
       first_name: newUser.first_name,
@@ -96,28 +92,24 @@ exports.createUser = async (req, res) => {
   } catch (error) {
     logger.error("POST: Error creating user");
     console.error("Error creating user:", error);
-    statsDClient.increment("endpoints.response.http.post.failure.createUser");
+    statsDClient.increment("endpoints.createUser.failure.errorCreateUser");
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 exports.updateUser = async (req, res) => {
   logger.info("PUT: ENTERING updateUser controller method");
-  statsDClient.increment("endpoints.request.http.put.updateUser");
+  statsDClient.increment("endpoints.updateUser.hit");
   if (Object.keys(req.query).length > 0 || Object.keys(req.body).length === 0) {
     logger.warn("PUT: Invalid request in updateUser");
-    statsDClient.increment(
-      "endpoints.response.http.put.fail.requestValidation.updateUser",
-    );
+    statsDClient.increment("endpoints.updateUser.fail.requestValidation");
     return res.status(400).send({ message: "Invalid request parameters" });
   }
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     logger.warn("PUT: Validation errors in updateUser");
-    statsDClient.increment(
-      "endpoints.response.http.put.fail.validationError.updateUser",
-    );
+    statsDClient.increment("endpoints.updateUser.fail.validationError");
     return res.status(400).send({ errors: errors.array() });
   }
 
@@ -137,12 +129,12 @@ exports.updateUser = async (req, res) => {
     }
 
     await User.update(updatedUserData, { where: { id: user.id } });
-    statsDClient.increment("endpoints.response.http.put.success.updateUser");
+    statsDClient.increment("endpoints.updateUser.success");
     return res.status(204).send();
   } catch (error) {
     logger.error("PUT: Error updating user information");
     console.error("Error updating user information:", error);
-    statsDClient.increment("endpoints.response.http.put.failure.updateUser");
+    statsDClient.increment("endpoints.updateUser.failure.update");
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
