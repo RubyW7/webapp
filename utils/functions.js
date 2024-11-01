@@ -3,10 +3,12 @@ const {
   S3Client,
   DeleteObjectCommand,
 } = require("@aws-sdk/client-s3");
+const statsDClient = require("../utils/metrics"); 
 
 const config = require("../config/s3Config");
 
 const uploadToS3 = async (file, bucketName) => {
+  const start = process.hrtime();
   try {
     const client = new S3Client({
       region: config.aws.region,
@@ -25,6 +27,9 @@ const uploadToS3 = async (file, bucketName) => {
     });
 
     const result = await client.send(command);
+    const [seconds, nanoseconds] = process.hrtime(start);
+    const duration = (seconds * 1000) + (nanoseconds / 1000000);
+    statsDClient.timing('s3.upload.duration', duration);
 
     return { filename: newFileName, result };
   } catch (e) {
@@ -33,6 +38,7 @@ const uploadToS3 = async (file, bucketName) => {
 };
 
 const deleteFromS3 = async (filename, bucketName) => {
+  const start = process.hrtime();
   try {
     const client = new S3Client({
       region: config.aws.region,
@@ -47,7 +53,12 @@ const deleteFromS3 = async (filename, bucketName) => {
       Key: filename,
     });
 
-    return await client.send(command);
+    const result = await client.send(command);
+    const [seconds, nanoseconds] = process.hrtime(start);
+    const duration = (seconds * 1000) + (nanoseconds / 1000000);
+    statsDClient.timing('s3.delete.duration', duration);
+
+    return result;
   } catch (e) {
     return e;
   }
