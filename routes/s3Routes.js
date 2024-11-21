@@ -1,6 +1,6 @@
 const express = require("express");
 const authenticate = require("../middleware/auth");
-const ensureVerified = require('../middleware/ensureVerified');
+const ensureVerified = require("../middleware/ensureVerified");
 
 const {
   deleteProfilePic,
