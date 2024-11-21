@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
+const AWS_CONFIG = require("../config/config").AWS_CONFIG;
+const { dynamoDb, sns } = require("../utils/helper")
 
 exports.getUser = async (req, res) => {
   const start = process.hrtime.bigint();
@@ -61,6 +63,21 @@ exports.createUser = async (req, res) => {
 
   const { first_name, last_name, email, password } = req.body;
   try {
+    logger.info("Adding user to dynamo db");
+    const userToken = await dynamoDb.addUserToken(email);
+    // publish messgae to SNS
+    const message = {
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      userToken: userToken,
+      action: 'verifyEmail'
+    }
+
+    logger.info("Sending message to Amazon SNS");
+    await sns.publishMessage(JSON.stringify(message));
+
+
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       logger.warn("POST: User already exists - createUser");
@@ -74,6 +91,7 @@ exports.createUser = async (req, res) => {
       email,
       password,
     });
+
     res.header("Accept", "application/json");
     const duration = process.hrtime.bigint() - start;
     statsDClient.timing(
