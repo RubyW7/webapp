@@ -1,12 +1,13 @@
 const express = require("express");
 const { body } = require("express-validator");
 const authenticate = require("../middleware/auth");
+const ensureVerified = require('../middleware/ensureVerified');
 const userController = require("../controllers/userController");
 
 const router = express.Router();
 
 //get user information with auth
-router.get("/v1/user/self", authenticate, userController.getUser);
+router.get("/v1/user/self", authenticate, ensureVerified, userController.getUser);
 
 // create new user
 router.post(
@@ -22,6 +23,7 @@ router.post(
 router.put(
   "/v1/user/self",
   authenticate,
+  ensureVerified,
   body("email").optional().isEmail().withMessage("Invalid email format"),
   body("password")
     .optional()
