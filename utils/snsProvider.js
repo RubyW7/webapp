@@ -28,7 +28,7 @@ class SnsProvider {
       const snsData = await SNSClient.send(publishCommand);
       console.log(snsData);
       logger.info(
-        `Message ${params.Message} sent to the topic ${params.TopicArn} with id ${messageData.MessageId}`
+        `Message ${params.Message} sent to the topic ${params.TopicArn} with id ${messageData.MessageId}`,
       );
     } catch (err) {
       console.log(err.message);

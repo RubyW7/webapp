@@ -51,13 +51,13 @@ const User = sequelize.define(
       defaultValue: false,
       validate: {
         notNull: true,
-        notEmpty: true
-      }
+        notEmpty: true,
+      },
     },
     verified_on: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-    }
+    },
   },
   {
     tableName: "Users",

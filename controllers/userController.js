@@ -4,7 +4,7 @@ const User = require("../models/user");
 const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
 const AWS_CONFIG = require("../config/config").AWS_CONFIG;
-const { dynamoDb, sns } = require("../utils/helper")
+const { dynamoDb, sns } = require("../utils/helper");
 
 exports.getUser = async (req, res) => {
   const start = process.hrtime.bigint();
@@ -71,12 +71,11 @@ exports.createUser = async (req, res) => {
       last_name: last_name,
       email: email,
       userToken: userToken,
-      action: 'verifyEmail'
-    }
+      action: "verifyEmail",
+    };
 
     logger.info("Sending message to Amazon SNS");
     await sns.publishMessage(JSON.stringify(message));
-
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {

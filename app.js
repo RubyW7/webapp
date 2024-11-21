@@ -7,7 +7,7 @@ const s3Routes = require("./routes/s3Routes");
 const fileUpload = require("express-fileupload");
 const logger = require("./utils/logger");
 const User = require("./models/user");
-const { dynamoDb, sns} = require("./utils/helper");
+const { dynamoDb, sns } = require("./utils/helper");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
