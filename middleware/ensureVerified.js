@@ -13,11 +13,9 @@ const ensureVerified = async (req, res, next) => {
     if (user.verified) {
       next(); // 用户已验证，继续处理请求
     } else {
-      res
-        .status(403)
-        .json({
-          message: "Please verify your email address to access this feature.",
-        });
+      res.status(403).json({
+        message: "Please verify your email address to access this feature.",
+      });
     }
   } catch (error) {
     console.error("Error accessing user data:", error);
