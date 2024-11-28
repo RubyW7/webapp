@@ -20,7 +20,7 @@ exports.uploadProfilePic = async (req, res) => {
       const user = await User.findByPk(userId);
       logger.info(
         `Current profile_image for user ${userId}: ${user.profile_image}`,
-      ); //add
+      ); 
       if (user.profile_image) {
         logger.warn(`User ${userId} already has a profile picture.`);
         return res.status(400).json({
