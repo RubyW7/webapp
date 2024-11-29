@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
-const AWS_CONFIG = require("../config/config").AWS_CONFIG;
-const { dynamoDb, sns } = require("../utils/helper");
+const AWS = require("aws-sdk");
+const uuid = require("uuid");
 
 exports.getUser = async (req, res) => {
   const start = process.hrtime.bigint();
@@ -61,10 +61,37 @@ exports.createUser = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
+  var dynamoDb = new AWS.DynamoDB({
+    apiVersion: "2012-08-10",
+    region: process.env.AWS_REGION || "us-east-1",
+  });
+
+  var sns = new AWS.SNS({});
+
   const { first_name, last_name, email, password } = req.body;
   try {
     logger.info("Adding user to dynamo db");
-    const userToken = await dynamoDb.addUserToken(email);
+    let userToken = uuid.v4();
+    // add user token to dynamo db
+
+    // find epoch time of 300 seconds from now
+    let epochTime = new Date().getTime();
+
+    let params = {
+      TableName: "csye6225",
+      Item: {
+        username: {
+          S: email,
+        },
+        usertoken: {
+          S: userToken,
+        },
+        tokenttl: {
+          N: epochTime.toString(),
+        },
+      },
+    };
+    await dynamoDb.putItem(params).promise();
     // publish messgae to SNS
     const message = {
       first_name: first_name,
@@ -75,7 +102,18 @@ exports.createUser = async (req, res) => {
     };
 
     logger.info("Sending message to Amazon SNS");
-    await sns.publishMessage(JSON.stringify(message));
+    const snsparams = {
+      Message: JSON.stringify(message),
+      TopicArn: process.env.SNS_TOPIC_ARN,
+    };
+
+    sns.publish(snsparams, function (err, data) {
+      if (err) {
+        console.log("Error", err.stack);
+      } else {
+        console.log("Success", data.MessageId);
+      }
+    });
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -153,5 +191,71 @@ exports.updateUser = async (req, res) => {
     console.error("Error updating user information:", error);
     statsDClient.increment("endpoints.updateUser.failure.update");
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.verifyUser = async (req, res) => {
+  logger.info("Verifying user email");
+  logger.info("Read Query Parameter email");
+  let email = req.query.email;
+  logger.info("Read Query Parameter token");
+  let token = req.query.token;
+
+  const user = await User.findOne({ where: { email } });
+  if (user && user.isValid) {
+    res.status(202).send({
+      message: "Already verified",
+    });
+  } else {
+    var params = {
+      TableName: "csye6225",
+      Key: {
+        username: {
+          S: email,
+        },
+        usertoken: {
+          S: token,
+        },
+      },
+    };
+
+    dynamoDb.getItem(params, async function (err, data) {
+      if (err) {
+        res.status(400).send({
+          message: "unable to verify",
+        });
+      } else {
+        try {
+          const ttl = data.Item.tokenttl.N;
+          const currentTime = new Date.getTime();
+          const timeDiff = (currentTime - ttl) / 60000;
+
+          if (timeDiff >= 5) {
+            return res.status(400).send({
+              message: "Token expired!",
+            });
+          }
+
+          if (data.Item.username.S !== email) {
+            return res.status(400).send({
+              message: "Token and email did not match",
+            });
+          }
+
+          const result = await User.update(
+            { verified: true },
+            { where: { id: user.id } },
+          );
+
+          if (result == 1) {
+            return res.status(200).send({ message: "Successfully verified " });
+          } else {
+            return res.status(400).send({ message: "Unable t overify" });
+          }
+        } catch (err) {
+          return res.status(500).send({ message: "Error updating the user" });
+        }
+      }
+    });
   }
 };

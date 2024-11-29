@@ -24,6 +24,8 @@ router.post(
   userController.createUser,
 );
 
+router.get("/v1/user/verifyUserEmail", userController.verifyUser);
+
 // update user information with auth
 router.put(
   "/v1/user/self",
