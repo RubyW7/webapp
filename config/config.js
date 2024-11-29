@@ -11,5 +11,6 @@ module.exports = {
   AWS_CONFIG: {
     DYNAMO_DB_TABLE_NAME: process.env.DYNAMO_DB_TABLE_NAME,
     SNS_TOPIC_ARN: process.env.SNS_TOPIC_ARN,
+    AWS_REGION: process.env.AWS_REGION,
   },
 };
