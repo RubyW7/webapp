@@ -15,7 +15,7 @@ variable "source_ami" {
 
 variable "subnet_id" {
   type    = string
-  default = "subnet-02d41e81eddf16052"
+  default = "subnet-0b5b576f9ef33bbbd"
 }
 
 variable "ami_users" {
