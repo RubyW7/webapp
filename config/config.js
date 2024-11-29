@@ -9,7 +9,7 @@ module.exports = {
   port: process.env.DB_PORT,
 
   AWS_CONFIG: {
-    DYNAMO_DB_TABLE_NAME: process.env.DYNAMO_DB_TABLE_NAME,
+    DYNAMO_DB_TABLE_NAME: process.env.DYNAMO_DB_TABLE_NAME || "csye6225",
     SNS_TOPIC_ARN: process.env.SNS_TOPIC_ARN,
     AWS_REGION: process.env.AWS_REGION,
   },
