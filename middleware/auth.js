@@ -18,11 +18,11 @@ const authenticate = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    if (!user) {
+    if (!user || !user.verified) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && user.verified && (await bcrypt.compare(password, user.password))) {
       req.user = user;
       return next();
     }

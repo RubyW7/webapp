@@ -5,6 +5,14 @@ const logger = require("../utils/logger");
 const statsDClient = require("../utils/metrics");
 const AWS = require("aws-sdk");
 const uuid = require("uuid");
+const { DATE } = require("sequelize");
+
+var dynamoDb = new AWS.DynamoDB({
+  apiVersion: "2012-08-10",
+  region: process.env.AWS_REGION || "us-east-1",
+});
+
+var sns = new AWS.SNS({});
 
 exports.getUser = async (req, res) => {
   const start = process.hrtime.bigint();
@@ -60,13 +68,6 @@ exports.createUser = async (req, res) => {
     statsDClient.increment("endpoints.createUser.fail.validationError");
     return res.status(400).json({ errors: errors.array() });
   }
-
-  var dynamoDb = new AWS.DynamoDB({
-    apiVersion: "2012-08-10",
-    region: process.env.AWS_REGION || "us-east-1",
-  });
-
-  var sns = new AWS.SNS({});
 
   const { first_name, last_name, email, password } = req.body;
   try {
@@ -202,18 +203,18 @@ exports.verifyUser = async (req, res) => {
   let token = req.query.token;
 
   const user = await User.findOne({ where: { email } });
-  if (user && user.isValid) {
+  if (user && user.verified) {
     res.status(202).send({
       message: "Already verified",
     });
   } else {
     var params = {
-      TableName: "csye6225",
+      TableName: 'csye6225',
       Key: {
-        username: {
+        'username': {
           S: email,
         },
-        usertoken: {
+        'usertoken': {
           S: token,
         },
       },
@@ -225,9 +226,15 @@ exports.verifyUser = async (req, res) => {
           message: "unable to verify",
         });
       } else {
+        console.log("Success dynamo getItem", data.Item);
         try {
-          const ttl = data.Item.tokenttl.N;
-          const currentTime = new Date.getTime();
+          const ttl = data.Item ? data.Item.tokenttl.N : null;
+          if (!ttl) {
+            console.log('No tto found or item is missing');
+            res.status(404).send({ message: "Token ttl not found"});
+          }
+          const now = new Date();
+          const currentTime = now.getTime();
           const timeDiff = (currentTime - ttl) / 60000;
 
           if (timeDiff >= 5) {
@@ -253,6 +260,8 @@ exports.verifyUser = async (req, res) => {
             return res.status(400).send({ message: "Unable t overify" });
           }
         } catch (err) {
+          console.log('-------------')
+          console.log(err)
           return res.status(500).send({ message: "Error updating the user" });
         }
       }

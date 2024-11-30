@@ -1,7 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
 const authenticate = require("../middleware/auth");
-const ensureVerified = require("../middleware/ensureVerified");
 const userController = require("../controllers/userController");
 
 const router = express.Router();
@@ -10,7 +9,6 @@ const router = express.Router();
 router.get(
   "/v1/user/self",
   authenticate,
-  ensureVerified,
   userController.getUser,
 );
 
@@ -30,7 +28,6 @@ router.get("/v1/user/verifyUserEmail", userController.verifyUser);
 router.put(
   "/v1/user/self",
   authenticate,
-  ensureVerified,
   body("email").optional().isEmail().withMessage("Invalid email format"),
   body("password")
     .optional()
