@@ -22,7 +22,11 @@ const authenticate = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user && user.verified && (await bcrypt.compare(password, user.password))) {
+    if (
+      user &&
+      user.verified &&
+      (await bcrypt.compare(password, user.password))
+    ) {
       req.user = user;
       return next();
     }

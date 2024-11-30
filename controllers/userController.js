@@ -209,12 +209,12 @@ exports.verifyUser = async (req, res) => {
     });
   } else {
     var params = {
-      TableName: 'csye6225',
+      TableName: "csye6225",
       Key: {
-        'username': {
+        username: {
           S: email,
         },
-        'usertoken': {
+        usertoken: {
           S: token,
         },
       },
@@ -230,8 +230,8 @@ exports.verifyUser = async (req, res) => {
         try {
           const ttl = data.Item ? data.Item.tokenttl.N : null;
           if (!ttl) {
-            console.log('No tto found or item is missing');
-            res.status(404).send({ message: "Token ttl not found"});
+            console.log("No tto found or item is missing");
+            res.status(404).send({ message: "Token ttl not found" });
           }
           const now = new Date();
           const currentTime = now.getTime();
@@ -260,8 +260,8 @@ exports.verifyUser = async (req, res) => {
             return res.status(400).send({ message: "Unable t overify" });
           }
         } catch (err) {
-          console.log('-------------')
-          console.log(err)
+          console.log("-------------");
+          console.log(err);
           return res.status(500).send({ message: "Error updating the user" });
         }
       }
