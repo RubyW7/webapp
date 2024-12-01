@@ -71,6 +71,13 @@ exports.createUser = async (req, res) => {
 
   const { first_name, last_name, email, password } = req.body;
   try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser && existingUser.verified) {
+      logger.warn("POST: User already exists - createUser");
+      statsDClient.increment("endpoints.createUserfail.userExists");
+      return res.status(400).json({ message: "User already exists" });
+    }
+
     logger.info("Adding user to dynamo db");
     let userToken = uuid.v4();
     // add user token to dynamo db
@@ -115,13 +122,6 @@ exports.createUser = async (req, res) => {
         console.log("Success", data.MessageId);
       }
     });
-
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      logger.warn("POST: User already exists - createUser");
-      statsDClient.increment("endpoints.createUserfail.userExists");
-      return res.status(400).json({ message: "User already exists" });
-    }
 
     const newUser = await User.create({
       first_name,

@@ -18,8 +18,12 @@ const authenticate = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    if (!user || !user.verified) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.verified) {
+      return res.status(403).json({ message: "User IS NOT VERITIED" });
     }
 
     if (
