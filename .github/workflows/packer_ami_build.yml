@@ -90,7 +90,10 @@ jobs:
         run: |
           pwd
           ls
-          latestAmi=$(aws ec2 describe-images --filters "Name=owner-id,Values=${{ vars.AWS_DEV_USER_ID }}" --query "sort_by(Images, &CreationDate)[-1].[ImageId]" --output "text")
+          latestAmi=$(aws ec2 describe-images \
+                  --owners ${{secrets.AWS_DEV_USER_ID}} \
+                  --query 'Images | sort_by(@, &CreationDate) | [-1].ImageId' \
+                  --region ${{secrets.AWS_REGION}} | tr -d '"')
           echo "latest AMI:"
           echo $latestAmi
           aws ec2 create-launch-template-version --launch-template-name launchEc2 --launch-template-data "ImageId=$latestAmi" --source-version 1
