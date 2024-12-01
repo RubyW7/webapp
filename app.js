@@ -12,6 +12,7 @@ app.use(fileUpload());
 
 app.use(express.json());
 app.use("/healthz", healthRoutes);
+app.use("/cicd", healthRoutes);
 app.use("/v1/user", s3Routes);
 app.use(userRoutes);
 
