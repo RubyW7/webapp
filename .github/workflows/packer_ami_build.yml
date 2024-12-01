@@ -96,13 +96,13 @@ jobs:
                   --region ${{secrets.AWS_REGION}} | tr -d '"')
           echo "latest AMI:"
           echo $latestAmi
-          aws ec2 create-launch-template-version --launch-template-name launchEc2 --launch-template-data "ImageId=$latestAmi" --source-version 1
+          aws ec2 create-launch-template-version --launch-template-name ${{secrets.EC2_NAME}} --launch-template-data "ImageId=$latestAmi" --source-version 1
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
       - name: Instance Refresh
         run: |
-          aws autoscaling start-instance-refresh --auto-scaling-group-name csye6225-asg-fall2024 --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --desired-configuration '{"LaunchTemplate":{"LaunchTemplateName": "launchEc2" , "Version": "$Latest"}}'
+          aws autoscaling start-instance-refresh --auto-scaling-group-name csye6225-asg-fall2024 --preferences '{"InstanceWarmup": 300, "MinHealthyPercentage": 50}' --desired-configuration '{"LaunchTemplate":{"LaunchTemplateName": "${{secrets.EC2_NAME}}" , "Version": "$Latest"}}'
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
