@@ -76,7 +76,6 @@ To start your web application, follow these steps:
      systemctl stop postgresql
      ```
 
-
 ## **SSL Certificate Configuration for Dev and Demo Environments**
 
 This document provides instructions for configuring SSL certificates for both **Dev** and **Demo** environments.
@@ -86,7 +85,9 @@ This document provides instructions for configuring SSL certificates for both **
 ### **Dev Environment**
 
 #### **Steps to Get an SSL Certificate**
+
 1. **Request an SSL certificate using AWS Certificate Manager (ACM):**
+
    - Go to the [AWS Certificate Manager Console](https://console.aws.amazon.com/acm/).
    - Click **Request a certificate** and select **Request a public certificate**.
    - Enter the domain name for your dev environment, e.g., `dev.rubyw.xyz`.
@@ -108,7 +109,9 @@ This document provides instructions for configuring SSL certificates for both **
 ### **Demo Environment**
 
 #### **Steps to Get an SSL Certificate**
+
 1. **Request an SSL certificate from Namecheap or another SSL vendor:**
+
    - **Generate a CSR and private key**:
      ```bash
      openssl req -new -newkey rsa:2048 -nodes -keyout demo.rubyw.xyz.key -out demo.rubyw.xyz.csr
@@ -121,12 +124,14 @@ This document provides instructions for configuring SSL certificates for both **
      - Certificate chain: `demo_rubyw_xyz.ca-bundle`
 
 2. **Prepare the Files:**
+
    - Ensure you have the following:
      - **Private Key**: `demo.rubyw.xyz.key`
      - **Certificate**: `demo_rubyw_xyz.crt`
      - **Certificate Chain**: `demo_rubyw_xyz.ca-bundle`
 
 3. **Import the Certificate into AWS ACM:**
+
    - Use the AWS CLI to import the certificate:
      ```bash
      aws acm import-certificate \
@@ -146,18 +151,21 @@ This document provides instructions for configuring SSL certificates for both **
 ---
 
 ### **File Paths**
+
 Below are the paths used in the commands:
 
-| File                  | Example Path                      |
-|-----------------------|-----------------------------------|
-| Private Key           | `/path/to/demo.rubyw.xyz.key`     |
-| Main Certificate      | `/path/to/demo_rubyw_xyz.crt`     |
-| Certificate Chain     | `/path/to/demo_rubyw_xyz.ca-bundle` |
+| File              | Example Path                        |
+| ----------------- | ----------------------------------- |
+| Private Key       | `/path/to/demo.rubyw.xyz.key`       |
+| Main Certificate  | `/path/to/demo_rubyw_xyz.crt`       |
+| Certificate Chain | `/path/to/demo_rubyw_xyz.ca-bundle` |
 
 ---
 
 ### **Testing SSL Configuration**
+
 1. Open your browser and navigate to:
+
    - Dev Environment: `https://dev.rubyw.xyz`
    - Demo Environment: `https://demo.rubyw.xyz`
 
@@ -170,16 +178,18 @@ Below are the paths used in the commands:
 ### **Troubleshooting**
 
 #### **Certificate Import Issues**
+
 - Ensure the private key matches the certificate.
 - Check that the certificate chain is correctly included.
 - Verify the file paths are correct.
 
 #### **DNS Validation Issues**
+
 - Ensure the `CNAME` record is added and has propagated.
 - Use `dig` or `nslookup` to confirm DNS records are correct:
   ```bash
   dig CNAME _acme-challenge.demo.rubyw.xyz
-
+  ```
 
 ## License
 
