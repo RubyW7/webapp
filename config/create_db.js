@@ -6,7 +6,7 @@ const client = new Client({
   host: process.env.DB_HOST,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
-  database: 'postgres'
+  database: "postgres",
 });
 
 const setupDatabase = async () => {
