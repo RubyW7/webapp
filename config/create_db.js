@@ -6,11 +6,13 @@ const client = new Client({
   host: process.env.DB_HOST,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  database: 'postgres'
 });
 
-const createDatabase = async () => {
+const setupDatabase = async () => {
   try {
     await client.connect();
+    console.log("Connected to PostgreSQL database.");
 
     await client.query(`
       DO
@@ -27,12 +29,13 @@ const createDatabase = async () => {
 
     await client.query(`CREATE DATABASE ${process.env.DB_NAME};`);
 
-    console.log("Database setup complete.");
+    console.log("Database and user setup complete.");
   } catch (err) {
-    console.error("Error creating database or user:", err);
+    console.error("Error during database setup:", err);
   } finally {
+    // 断开数据库连接
     await client.end();
   }
 };
 
-module.exports = createDatabase;
+module.exports = setupDatabase;

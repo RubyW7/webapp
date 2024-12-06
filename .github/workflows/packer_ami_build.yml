@@ -13,7 +13,6 @@ jobs:
     env:
       DB_USER: ${{secrets.DB_USER}}
       DB_PORT: ${{secrets.DB_PORT}}
-      DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       DB_NAME: ${{secrets.DB_NAME}}
       AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
       AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
@@ -34,7 +33,6 @@ jobs:
         run: |
           echo "DB_USER=${{secrets.DB_USER}}" >> .env
           echo "DB_PORT=${{secrets.DB_PORT}}" >> .env
-          echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
           echo "DB_NAME=${{secrets.DB_NAME}}" >> .env
           echo "AWS_ACCESS_KEY_ID=${{secrets.AWS_DEMO_ACCESS_KEY_ID}}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_DEMO_SECRET_ACCESS_KEY}}" >> .env

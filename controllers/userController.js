@@ -119,7 +119,7 @@ exports.createUser = async (req, res) => {
       if (err) {
         console.log("Error", err.stack);
       } else {
-        console.log("Success", data.MessageId);
+        console.log("Success", data);
       }
     });
 
