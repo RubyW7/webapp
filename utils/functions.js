@@ -12,10 +12,6 @@ const uploadToS3 = async (file, bucketName) => {
   try {
     const client = new S3Client({
       region: config.aws.region,
-      credentials: {
-        accessKeyId: config.aws.access_key,
-        secretAccessKey: config.aws.secret_key,
-      },
     });
 
     const newFileName = `pic_${Date.now().toString()}.${file.mimetype.split("/")[1]}`;
@@ -42,10 +38,6 @@ const deleteFromS3 = async (filename, bucketName) => {
   try {
     const client = new S3Client({
       region: config.aws.region,
-      credentials: {
-        accessKeyId: config.aws.access_key,
-        secretAccessKey: config.aws.secret_key,
-      },
     });
 
     const command = new DeleteObjectCommand({
